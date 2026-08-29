@@ -164,6 +164,27 @@ const bannerOffset =
 			}
 
 			updateTimeBackground();
+
+			// 背景加载完成后再淡入，避免首屏出现突兀的图片闪烁。
+			function revealTimeBackground() {
+				const background = getComputedStyle(document.documentElement)
+					.getPropertyValue('--time-background').trim();
+				const match = background.match(/url\(["']?([^"')]+)["']?\)/);
+				if (!match) return;
+
+				const image = new Image();
+				const reveal = () => document.body?.classList.add('bg-loaded');
+				image.onload = reveal;
+				image.onerror = reveal;
+				image.src = match[1];
+				// 本地图片通常会立即加载；超时保护避免浏览器异常时背景一直隐藏。
+				window.setTimeout(reveal, 1500);
+			}
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', revealTimeBackground, { once: true });
+			} else {
+				revealTimeBackground();
+			}
 			// Keep the image in sync when the page stays open across a time boundary.
 			window.setInterval(updateTimeBackground, 60 * 1000);
 		</script>
@@ -196,11 +217,41 @@ const bannerOffset =
 }}>
 @tailwind components;
 html {
+	background-color: var(--page-bg);
+	background-image: none;
+	overflow-x: hidden;
+}
+
+body {
+	position: relative;
+	min-height: 100vh;
+}
+
+/* 独立的固定背景层：图片透明度与页面底色混合，形成参考站点的柔和效果。 */
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+	min-height: 100vh;
 	background-image: var(--time-background);
 	background-position: center;
 	background-size: cover;
-	background-attachment: fixed;
 	background-repeat: no-repeat;
+	opacity: 0;
+	pointer-events: none;
+	z-index: -1;
+	transition: opacity 0.3s ease-in-out;
+	will-change: opacity;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+}
+
+body.bg-loaded::before {
+	opacity: 0.5;
 }
 
 @layer components {

@@ -38,6 +38,13 @@ export const siteConfig: SiteConfig = {
       description: '基于 File Browser 搭建的个人本地网盘',
       external: true,
     },
+    {
+      name: '个人密码库',
+      url: 'https://ywht1wbab53o.xiaomiqiu.com/#/vault',
+      image: 'https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg',
+      description: '基于 Vaultwarden 搭建的个人密码管理库',
+      external: true,
+    },
   ],
 }
 
