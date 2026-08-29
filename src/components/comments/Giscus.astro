@@ -1,0 +1,40 @@
+<section class="card-base p-6 rounded-[var(--radius-large)] onload-animation">
+  <div id="giscus-container"></div>
+</section>
+
+<script>
+function loadGiscus() {
+  const container = document.getElementById("giscus-container");
+  if (!container || container.hasChildNodes()) {
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.src = "https://giscus.app/client.js";
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.setAttribute("data-repo", "riyuexingchennnn/cmcblog");
+  script.setAttribute("data-repo-id", "R_kgDONVKolg");
+  script.setAttribute("data-category", "Announcements");
+  script.setAttribute("data-category-id", "DIC_kwDONVKols4DAQQa");
+  script.setAttribute("data-mapping", "pathname");
+  script.setAttribute("data-strict", "0");
+  script.setAttribute("data-reactions-enabled", "1");
+  script.setAttribute("data-emit-metadata", "0");
+  script.setAttribute("data-input-position", "bottom");
+  script.setAttribute("data-theme", "preferred_color_scheme");
+  script.setAttribute("data-lang", "zh-CN");
+
+  container.appendChild(script);
+}
+
+loadGiscus();
+
+if (window.swup?.hooks) {
+  window.swup.hooks.on("page:view", loadGiscus);
+} else {
+  document.addEventListener("swup:enable", () => {
+    window.swup?.hooks.on("page:view", loadGiscus);
+  });
+}
+</script>

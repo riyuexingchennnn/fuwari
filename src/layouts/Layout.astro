@@ -20,6 +20,11 @@ import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
+import bg0 from "@/assets/images/bg0.png";
+import bg1 from "@/assets/images/bg1.png";
+import bg2 from "@/assets/images/bg2.png";
+import bg3 from "@/assets/images/bg3.png";
+import bg4 from "@/assets/images/bg4.png";
 
 interface Props {
 	title?: string;
@@ -57,6 +62,9 @@ if (title) {
 
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+
+// Backgrounds selected by the local time of the visitor's browser.
+const timeBackgrounds = [bg0.src, bg1.src, bg2.src, bg3.src, bg4.src];
 
 // const siteLang = siteConfig.lang.replace('_', '-')
 if (!lang) {
@@ -113,7 +121,7 @@ const bannerOffset =
 		<Umami />
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
+		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, timeBackgrounds}}>
 			// Load the theme from local storage
 			const theme = localStorage.getItem('theme') || DEFAULT_THEME;
 			switch (theme) {
@@ -139,6 +147,25 @@ const bannerOffset =
 			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 			offset = offset - offset % 4;
 			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+
+			// Pick a background according to the visitor's local hour:
+			// 04–07, 07–14, 14–17, 17–19, and 19–04 (overnight).
+			function getBackgroundIndex(hour) {
+				if (hour >= 4 && hour < 7) return 0;
+				if (hour >= 7 && hour < 14) return 1;
+				if (hour >= 14 && hour < 17) return 2;
+				if (hour >= 17 && hour < 19) return 3;
+				return 4;
+			}
+
+			function updateTimeBackground() {
+				const background = timeBackgrounds[getBackgroundIndex(new Date().getHours())];
+				document.documentElement.style.setProperty('--time-background', `url("${background}")`);
+			}
+
+			updateTimeBackground();
+			// Keep the image in sync when the page stays open across a time boundary.
+			window.setInterval(updateTimeBackground, 60 * 1000);
 		</script>
 		<style define:vars={{
 			configHue,
@@ -168,6 +195,14 @@ const bannerOffset =
 	'banner-height': `${BANNER_HEIGHT}vh`,
 }}>
 @tailwind components;
+html {
+	background-image: var(--time-background);
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+
 @layer components {
 	.enable-banner.is-home #banner-wrapper {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
