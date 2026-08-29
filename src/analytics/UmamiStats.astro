@@ -1,0 +1,142 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div
+    class="mt-4 border-t border-dashed border-black/10 pt-4 dark:border-white/10"
+    data-umami-stats
+>
+    <div class="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-black/50 dark:text-white/50">
+        <Icon name="material-symbols:bar-chart-rounded" class="text-[1.1rem] text-[var(--primary)]" />
+        <span>站点统计</span>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div class="rounded-xl bg-[var(--btn-regular-bg)] p-3">
+            <div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-black/5 text-[var(--primary)] dark:bg-white/10">
+                <Icon name="material-symbols:visibility-outline-rounded" class="text-[1.15rem]" />
+            </div>
+            <div class="mb-1 text-sm text-black/50 dark:text-white/50">浏览量</div>
+            <div class="flex items-end gap-1">
+                <span
+                    class="text-2xl font-extrabold leading-none text-[var(--primary)]"
+                    data-umami-pageviews
+                >--</span>
+                <span class="text-xs font-bold text-black/40 dark:text-white/40">PV</span>
+            </div>
+        </div>
+        <div class="rounded-xl bg-[var(--btn-regular-bg)] p-3">
+            <div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-black/5 text-[var(--primary)] dark:bg-white/10">
+                <Icon name="material-symbols:person-outline-rounded" class="text-[1.15rem]" />
+            </div>
+            <div class="mb-1 text-sm text-black/50 dark:text-white/50">访客数</div>
+            <div class="flex items-end gap-1">
+                <span
+                    class="text-2xl font-extrabold leading-none text-[var(--primary)]"
+                    data-umami-visitors
+                >--</span>
+                <span class="text-xs font-bold text-black/40 dark:text-white/40">UV</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+const UMAMI_API_BASE = "https://gateway-us.umami.is/api";
+const UMAMI_SHARE_ID = "dvktHwCGPSft7SGP";
+const UMAMI_CACHE_KEY = "cmcblog:umami-site-stats";
+const UMAMI_CACHE_TTL = 5 * 60 * 1000;
+
+function formatUmamiStat(value) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+        return "--";
+    }
+
+    if (number >= 10000) {
+        return `${(number / 10000).toFixed(number >= 100000 ? 0 : 1).replace(/\.0$/, "")}w`;
+    }
+
+    return new Intl.NumberFormat("en-US").format(number);
+}
+
+function renderUmamiStats(stats) {
+    const root = document.querySelector("[data-umami-stats]");
+
+    if (!root) {
+        return;
+    }
+
+    root.querySelector("[data-umami-pageviews]").textContent = formatUmamiStat(stats.pageviews);
+    root.querySelector("[data-umami-visitors]").textContent = formatUmamiStat(stats.visitors);
+}
+
+function readUmamiStatsCache() {
+    try {
+        const cached = JSON.parse(localStorage.getItem(UMAMI_CACHE_KEY) || "null");
+
+        if (cached && Date.now() - cached.updatedAt < UMAMI_CACHE_TTL) {
+            return cached.stats;
+        }
+    } catch {
+        localStorage.removeItem(UMAMI_CACHE_KEY);
+    }
+
+    return null;
+}
+
+function writeUmamiStatsCache(stats) {
+    try {
+        localStorage.setItem(UMAMI_CACHE_KEY, JSON.stringify({ stats, updatedAt: Date.now() }));
+    } catch {
+        // Storage can be unavailable in private browsing; live data still renders.
+    }
+}
+
+async function loadUmamiStats() {
+    const cached = readUmamiStatsCache();
+
+    if (cached) {
+        renderUmamiStats(cached);
+        return;
+    }
+
+    try {
+        const shareResponse = await fetch(`${UMAMI_API_BASE}/share/${UMAMI_SHARE_ID}`, {
+            cache: "no-store",
+        });
+
+        if (!shareResponse.ok) {
+            throw new Error(`Unable to load Umami share data: ${shareResponse.status}`);
+        }
+
+        const share = await shareResponse.json();
+        const statsUrl = new URL(`${UMAMI_API_BASE}/websites/${share.websiteId}/stats`);
+
+        statsUrl.searchParams.set("startAt", "0");
+        statsUrl.searchParams.set("endAt", String(Date.now()));
+
+        const statsResponse = await fetch(statsUrl, {
+            cache: "no-store",
+            headers: {
+                "x-umami-share-context": "1",
+                "x-umami-share-token": share.token,
+            },
+        });
+
+        if (!statsResponse.ok) {
+            throw new Error(`Unable to load Umami stats: ${statsResponse.status}`);
+        }
+
+        const stats = await statsResponse.json();
+
+        renderUmamiStats(stats);
+        writeUmamiStatsCache(stats);
+    } catch (error) {
+        console.warn(error);
+    }
+}
+
+loadUmamiStats();
+document.addEventListener("astro:page-load", loadUmamiStats);
+</script>

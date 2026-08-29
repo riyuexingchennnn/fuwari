@@ -1,5 +1,13 @@
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
 
+export type AppItem = {
+	name: string;
+	url: string;
+	image: string;
+	description?: string;
+	external?: boolean;
+};
+
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
@@ -36,6 +44,7 @@ export type SiteConfig = {
 	};
 
 	favicon: Favicon[];
+	apps?: AppItem[];
 };
 
 export type Favicon = {

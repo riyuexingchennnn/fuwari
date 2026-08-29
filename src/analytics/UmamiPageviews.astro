@@ -1,0 +1,181 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	path: string;
+	class?: string;
+	icon?: boolean;
+}
+
+const { path, icon = false } = Astro.props;
+const className = Astro.props.class;
+---
+
+{icon ? (
+    <div class:list={["flex flex-row items-center", className]} data-umami-post-views data-umami-path={path}>
+        <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+            <Icon name="material-symbols:visibility-outline-rounded"></Icon>
+        </div>
+        <div class="text-sm">
+            <span data-umami-post-views-value>--</span> 阅读
+        </div>
+    </div>
+) : (
+    <div class={className} data-umami-post-views data-umami-path={path}>
+        <span data-umami-post-views-value>--</span> 阅读
+    </div>
+)}
+
+<script>
+(function () {
+    const API_BASE = "https://gateway-us.umami.is/api";
+    const SHARE_ID = "dvktHwCGPSft7SGP";
+    const CACHE_KEY = "cmcblog:umami-path-metrics";
+    const CACHE_TTL = 5 * 60 * 1000;
+
+    function formatPageviews(value) {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+            return "--";
+        }
+
+        if (number >= 10000) {
+            return `${(number / 10000).toFixed(number >= 100000 ? 0 : 1).replace(/\.0$/, "")}w`;
+        }
+
+        return new Intl.NumberFormat("en-US").format(number);
+    }
+
+    function normalizePath(path) {
+        try {
+            path = new URL(path, window.location.origin).pathname;
+        } catch {
+            path = path || "/";
+        }
+
+        try {
+            path = decodeURI(path);
+        } catch {
+            // Keep the raw path if it is not a valid encoded URI.
+        }
+
+        return path || "/";
+    }
+
+    function getPathCandidates(path) {
+        const normalized = normalizePath(path);
+        const withoutTrailingSlash = normalized.length > 1 ? normalized.replace(/\/$/, "") : normalized;
+        const withTrailingSlash = withoutTrailingSlash === "/" ? "/" : `${withoutTrailingSlash}/`;
+
+        return new Set([normalized, withoutTrailingSlash, withTrailingSlash]);
+    }
+
+    function findPageviews(metrics, path) {
+        const candidates = getPathCandidates(path);
+        const match = metrics.find((item) => {
+            const itemCandidates = getPathCandidates(item.x || item.label || item.path || "");
+
+            for (const candidate of itemCandidates) {
+                if (candidates.has(candidate)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return Number(match?.y ?? match?.views ?? match?.count ?? 0);
+    }
+
+    function renderPageviews(metrics) {
+        document.querySelectorAll("[data-umami-post-views]").forEach((root) => {
+            const path = root.getAttribute("data-umami-path") || window.location.pathname;
+            const value = root.querySelector("[data-umami-post-views-value]");
+
+            if (value) {
+                value.textContent = formatPageviews(findPageviews(metrics, path));
+            }
+        });
+    }
+
+    function readCache() {
+        try {
+            const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+
+            if (cached && Date.now() - cached.updatedAt < CACHE_TTL) {
+                return cached.metrics;
+            }
+        } catch {
+            localStorage.removeItem(CACHE_KEY);
+        }
+
+        return null;
+    }
+
+    function writeCache(metrics) {
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ metrics, updatedAt: Date.now() }));
+        } catch {
+            // Storage can be unavailable in private browsing; live data still renders.
+        }
+    }
+
+    async function fetchMetrics() {
+        const shareResponse = await fetch(`${API_BASE}/share/${SHARE_ID}`, { cache: "no-store" });
+
+        if (!shareResponse.ok) {
+            throw new Error(`Unable to load Umami share data: ${shareResponse.status}`);
+        }
+
+        const share = await shareResponse.json();
+        const metricsUrl = new URL(`${API_BASE}/websites/${share.websiteId}/metrics`);
+
+        metricsUrl.searchParams.set("startAt", "0");
+        metricsUrl.searchParams.set("endAt", String(Date.now()));
+        metricsUrl.searchParams.set("type", "path");
+        metricsUrl.searchParams.set("limit", "1000");
+
+        const metricsResponse = await fetch(metricsUrl, {
+            cache: "no-store",
+            headers: {
+                "x-umami-share-context": "1",
+                "x-umami-share-token": share.token,
+            },
+        });
+
+        if (!metricsResponse.ok) {
+            throw new Error(`Unable to load Umami path metrics: ${metricsResponse.status}`);
+        }
+
+        return metricsResponse.json();
+    }
+
+    async function loadPageviews() {
+        const cached = readCache();
+
+        if (cached) {
+            renderPageviews(cached);
+            return;
+        }
+
+        try {
+            const metrics = await fetchMetrics();
+
+            renderPageviews(metrics);
+            writeCache(metrics);
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
+    const pageviewsWindow = window;
+
+    if (!pageviewsWindow.__cmcblogUmamiPageviews) {
+        pageviewsWindow.__cmcblogUmamiPageviews = { load: loadPageviews };
+        document.addEventListener("astro:page-load", loadPageviews);
+    }
+
+    pageviewsWindow.__cmcblogUmamiPageviews.load();
+})();
+</script>
