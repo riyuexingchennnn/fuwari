@@ -141,13 +141,13 @@ echo 1 > "$PWM/pwm0/enable"
 - **根分区**：29.3GB（overlay 扩容后，安装大量软件包也不慌）
 - **存储**：2TB USB SSD（/mnt/nas，做 NAS 和个人网盘）
 
-![LuCI 主界面](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/8.png)
+![LuCI 主界面](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/8.png)
 
 登录后就是这个熟悉的界面了，可以看到系统状态、CPU 负载、内存占用等实时信息。
 
 ### 目前安装的常用软件包
 
-![软件包列表](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/9.png)
+![软件包列表](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/9.png)
 
 笔者目前的装机清单（按用途分类）：
 
@@ -168,7 +168,7 @@ echo 1 > "$PWM/pwm0/enable"
 
 装了 `luci-app-dockerman` 之后，管理容器就非常方便了，图形化界面一目了然。
 
-![Docker 容器管理界面](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/10.png)
+![Docker 容器管理界面](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/10.png)
 
 笔者目前跑着 6 个容器，全部是实战级应用：
 
@@ -251,7 +251,7 @@ R4S 当软路由，最实用的场景之一就是内网穿透，笔者目前同�
 
 ### 服务列表一览
 
-![LuCI 服务菜单](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/11.png)
+![LuCI 服务菜单](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/11.png)
 
 在"服务"菜单里可以看到所有已安装的服务，OpenClash、DDNS、EasyTier、FileBrowser、FRPC、Tailscale 等都集中在这里管理，非常方便。
 
