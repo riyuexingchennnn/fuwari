@@ -9,7 +9,7 @@ import { LinkPreset } from './types/config'
 
 export const siteConfig: SiteConfig = {
   title: '日月星辰の个人博客',
-  subtitle: '',
+  subtitle: '日月星辰の小窝',
   lang: 'zh_CN',         // 'en', 'zh_CN', 'zh_TW', 'ja', 'ko'
   themeColor: {
     hue: 250,         // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
@@ -33,16 +33,44 @@ export const siteConfig: SiteConfig = {
   apps: [
     {
       name: '个人网盘',
-      url: 'https://e1mqdjgvdt2t.xiaomiqiu.com',
+      url: 'https://jumc7et35z6o.vip3.xiaomiqiu123.top/',
       image: 'https://raw.githubusercontent.com/filebrowser/filebrowser/master/frontend/public/img/logo.svg',
       description: '基于 File Browser 搭建的个人本地网盘',
       external: true,
     },
     {
       name: '个人密码库',
-      url: 'https://ywht1wbab53o.xiaomiqiu.com/#/vault',
+      url: 'https://3mc6gx9ewgtu.vip3.xiaomiqiu123.top/',
       image: 'https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg',
       description: '基于 Vaultwarden 搭建的个人密码管理库',
+      external: true,
+    },
+    {
+      name: '个人网盘',
+      url: 'https://59vp3kckptwv.vip3.xiaomiqiu123.top/',
+      image: 'https://res.oplist.org/logo/logo.svg',
+      description: '基于 Openlist 搭建的个人本地网盘',
+      external: true,
+    },
+    {
+      name: '个人AI助手',
+      url: 'https://ck4xvfsqxt67.vip3.xiaomiqiu123.top/#/chat',
+      image: 'https://raw.githubusercontent.com/AstrBotDevs/AstrBot/master/dashboard/src/assets/images/icon-no-shadow.svg',
+      description: '基于 Astrbot 搭建的个人AI助手，对接Napcat机器人',
+      external: true,
+    },
+    {
+      name: '个人家居系统',
+      url: 'https://76kfxaa44u7a.vip3.xiaomiqiu123.top/',
+      image: 'https://raw.githubusercontent.com/home-assistant/home-assistant.io/current/source/images/favicon.svg',
+      description: '基于 HomeAssistant 搭建的个人智能家居系统',
+      external: true,
+    },
+    {
+      name: '个人路由器',
+      url: 'https://r8bdwgq5nmc5.vip3.xiaomiqiu123.top',
+      image: 'https://cdn.jsdelivr.net/gh/openwrt/branding@master/logo/openwrt_logo_blue_and_dark_blue.svg',
+      description: '基于 ImmortalWrt 搭建的个人软路由系统',
       external: true,
     },
   ],
@@ -73,7 +101,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
   avatar: 'assets/images/avatar.png',  // Relative to the /src directory. Relative to the /public directory if it starts with '/'
   name: '日月星辰',
-  bio: '',
+  bio: '人工智能硕士，研究方向二次元、动漫、游戏，偶尔写写代码调调机器人',
   links: [
     {
       name: 'csdn',
