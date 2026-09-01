@@ -130,4 +130,147 @@ echo 1 > "$PWM/pwm0/enable"
 
 开源链接：[https://github.com/riyuexingchennnn/filebrowser-zzz-style](https://github.com/riyuexingchennnn/filebrowser-zzz-style)
 
-### 未完待续
+## 五、系统配置总览
+
+安装好系统、装好软件包之后，笔者再来分享一下目前的完整配置，给大家一个参考。
+
+### 硬件与系统
+
+- **硬件**：NanoPi R4S（4GB 内存版，RK3399，aarch64）
+- **系统**：ImmortalWrt 24.10.6 (r33869)
+- **根分区**：29.3GB（overlay 扩容后，安装大量软件包也不慌）
+- **存储**：2TB USB SSD（/mnt/nas，做 NAS 和个人网盘）
+
+![LuCI 主界面](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/8.png)
+
+登录后就是这个熟悉的界面了，可以看到系统状态、CPU 负载、内存占用等实时信息。
+
+### 目前安装的常用软件包
+
+![软件包列表](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/9.png)
+
+笔者目前的装机清单（按用途分类）：
+
+- **主题美化**：`luci-theme-argon` + `luci-app-argon-config`（Argon 主题设置）
+- **容器**：`luci-app-docker` + `luci-app-dockerman`（Docker 管理面板）
+- **网盘**：`luci-app-openlist`（OpenList 网盘聚合）
+- **文件管理**：`luci-app-filebrowser-go`（FileBrowser）
+- **内网穿透**：`luci-app-frpc`、`luci-app-ddns-go`（DDNS）、`luci-app-easytier`（EasyTier 组网）、`luci-app-tailscale-community`（Tailscale）
+- **代理**：`luci-app-openclash`
+- **NAS**：`luci-app-samba4`（SMB 共享）
+- **监控**：`luci-app-netdata`、`luci-app-statistics`
+- **网络优化**：`luci-app-sqm`（智能队列管理）
+- **工具**：`luci-app-ttyd`（网页终端）、`luci-app-cpufreq`（CPU 调频）、`adguardhome`（DNS 广告过滤）
+
+> 小技巧：如果软件包列表更新慢，可以在"系统-软件包"里先点"更新列表"，再搜索安装，速度会快很多。
+
+## 六、Docker 实战：把服务都装进容器
+
+装了 `luci-app-dockerman` 之后，管理容器就非常方便了，图形化界面一目了然。
+
+![Docker 容器管理界面](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/10.png)
+
+笔者目前跑着 6 个容器，全部是实战级应用：
+
+| 容器 | 用途 | 端口 |
+|------|------|------|
+| `vaultwarden` | 自托管密码管理器（Bitwarden 兼容） | 18080 |
+| `pdfjs` | 自建 PDF 在线查看器（支持页面间距切换） | 8088 |
+| `qinglong` | 青龙面板（定时任务） | - |
+| `homeassistant` | 智能家居中枢 | - |
+| `xiaomiqiu-arm64` | 小米球内网穿透（VIP 节点） | - |
+| `xiaomiqiu-arm64-free` | 小米球内网穿透（免费节点） | - |
+
+### 部署一个容器（以 Vaultwarden 为例）
+
+```bash
+docker run -d \
+  --name vaultwarden \
+  --restart unless-stopped \
+  -p 18080:80 \
+  -v /mnt/nas/docker/vaultwarden:/data \
+  vaultwarden/server:latest
+```
+
+> 注意：数据目录记得放到 NAS 盘（/mnt/nas）上，这样重刷系统不丢数据。另外容器数据目录的权限要给对（chown 1000:1000），不然容器会报 "unable to open database file"。
+
+## 七、开机自启动
+
+### 风扇固定转速
+
+在"系统-启动项-本地启动脚本"中保留风扇脚本，开机自动调速：
+
+```bash
+# NanoPi R4S fan fixed speed (90%)
+PWM=/sys/class/pwm/pwmchip1
+[ -d "$PWM/pwm0" ] || echo 0 > "$PWM/export"
+sleep 1
+echo 0 > "$PWM/pwm0/enable"
+echo 50000 > "$PWM/pwm0/period"
+echo 45000 > "$PWM/pwm0/duty_cycle"
+echo 1 > "$PWM/pwm0/enable"
+```
+
+### 开机自动启动所有 Docker 容器
+
+虽然容器都设置了 `--restart unless-stopped`，但为了保险，笔者在 rc.local 里加了一段"遍历启动所有容器"的脚本，双保险：
+
+```bash
+# Auto-start all Docker containers on boot
+if command -v docker >/dev/null 2>&1; then
+    # Wait for the Docker daemon to become ready (max 30s)
+    i=0
+    while [ $i -lt 30 ]; do
+        docker info >/dev/null 2>&1 && break
+        sleep 1
+        i=$((i+1))
+    done
+    # Start every stopped container
+    for cid in $(docker ps -aq); do
+        state=$(docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null)
+        if [ "$state" = "false" ]; then
+            docker start "$cid" >/dev/null 2>&1
+        fi
+    done
+fi
+```
+
+> 为什么要加这段？因为 Docker 守护进程启动比 rc.local 慢，直接执行 docker 命令可能失败，所以先循环等待 daemon 就绪，再遍历启动所有容器。实测软路由断电重启后，6 个容器全部自动拉起，非常稳。
+
+## 八、内网穿透全家桶
+
+R4S 当软路由，最实用的场景之一就是内网穿透，笔者目前同时用了四套方案，各司其职：
+
+| 方案 | 用途 |
+|------|------|
+| **frpc** | 稳定穿透 HTTP/HTTPS 服务（配合 DDNS 使用） |
+| **ddns-go** | 动态域名解析，让穿透域名永不失效 |
+| **Tailscale** | 异地组网，手机/电脑随时连回家（WireGuard 协议） |
+| **EasyTier** | 轻量级组网，和 Tailscale 互为备份 |
+| **小米球（xiaomiqiu）** | ngrok 类内网穿透，VIP + 免费双节点 |
+
+### 服务列表一览
+
+![LuCI 服务菜单](./超实用,不踩坑! Nano Pi R4S安装Openwrt教程/11.png)
+
+在"服务"菜单里可以看到所有已安装的服务，OpenClash、DDNS、EasyTier、FileBrowser、FRPC、Tailscale 等都集中在这里管理，非常方便。
+
+> 小提示：Tailscale 和 EasyTier 都是组网工具，功能有重叠，如果只用其中一个，可以把另一个停掉，省一点内存。
+
+## 九、总结
+
+经过这一整套配置，NanoPi R4S 已经从"一台小路由器"进化成了"家庭服务器全家桶"：
+
+- ✅ 科学上网（OpenClash）
+- ✅ 自建网盘（OpenList + FileBrowser + Samba NAS）
+- ✅ 密码管理（Vaultwarden）
+- ✅ 智能家居（Home Assistant）
+- ✅ 内网穿透（frpc + DDNS + Tailscale + EasyTier + 小米球）
+- ✅ 在线 PDF 查看（pdfjs）
+- ✅ 定时任务（青龙）
+- ✅ 广告过滤（AdGuard Home）
+
+一台 300 块的 R4S，能干的事情远超它的价格。如果大家有什么好玩的玩法，欢迎在评论区交流！
+
+> 本文会持续更新，如果后面笔者又折腾了新功能，会继续补充到这篇教程里。
+
