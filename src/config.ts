@@ -35,7 +35,7 @@ export const siteConfig: SiteConfig = {
       name: '个人网盘',
       url: 'https://jumc7et35z6o.vip3.xiaomiqiu123.top/',
       image: 'https://cdn.jsdelivr.net/gh/filebrowser/filebrowser@master/frontend/public/img/logo.svg',
-      description: '基于 File Browser 搭建的个人本地网盘',
+      description: '基于 FileBrowser 搭建的个人本地网盘',
       external: true,
     },
     {
@@ -56,7 +56,7 @@ export const siteConfig: SiteConfig = {
       name: '个人AI助手',
       url: 'https://rcsvnfd47bsc.ngrok.xiaomiqiu123.top/#/chat',
       image: 'https://cdn.jsdelivr.net/gh/AstrBotDevs/AstrBot@master/dashboard/src/assets/images/icon-no-shadow.svg',
-      description: '基于 Astrbot 搭建的个人AI助手，对接Napcat机器人',
+      description: '基于 Astrbot 搭建的个人AI助手，对接 Napcat 机器人',
       external: true,
     },
     {
@@ -71,6 +71,13 @@ export const siteConfig: SiteConfig = {
       url: 'https://rlv29j98hrje.ngrok.xiaomiqiu123.top',
       image: 'https://cdn.jsdelivr.net/gh/openwrt/branding@master/logo/openwrt_logo_blue_and_dark_blue.svg',
       description: '基于 ImmortalWrt 搭建的个人软路由系统',
+      external: true,
+    },
+    {
+      name: '个人云图库',
+      url: 'https://r8bdwgq5nmc5.vip3.xiaomiqiu123.top/photos',
+      image: 'https://cdn.jsdelivr.net/gh/immich-app/immich@main/design/immich-logo.svg',
+      description: '基于 Immich 搭建的个人云图库',
       external: true,
     },
   ],
