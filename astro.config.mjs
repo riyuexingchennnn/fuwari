@@ -26,7 +26,7 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://cmcblog.netlify.app/',
+  site: 'https://cmcblog.top/',
   base: '/',
   trailingSlash: 'always',
   integrations: [
