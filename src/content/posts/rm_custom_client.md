@@ -2,7 +2,7 @@
 title: rm软件组客户端开发快速引导
 published: 2025-12-01
 description: ''
-image: './rm软件组客户端开发快速引导/10.gif'
+image: '/posts/rm_custom_client/10.webp'
 tags: ['软件开发','FYT']
 category: '软件开发'
 draft: false
@@ -27,9 +27,9 @@ lang: ''
     1. 为能量机关和雷达站提供仿真视频
     2. 为自瞄提供仿真环境
 
-    ![](./rm软件组客户端开发快速引导/10.gif)
+    ![](/posts/rm_custom_client/10.webp)
 
-    ![](./rm软件组客户端开发快速引导/11.gif)
+    ![](/posts/rm_custom_client/11.webp)
 
     我的开源：https://fyt-vision.coding.net/p/fyt2025/d/rm_unity/git
 
@@ -294,7 +294,7 @@ UI Toolkit更符合客户端开发，**性能好**(UGUI每个UI都是一个GameO
 
 ### 示例：编写第一个页面 开始界面
 
-![](./rm软件组客户端开发快速引导/8.png)
+![](./rm软件组客户端开发快速引导/8.jpg)
 
 1. 方法一：在Project中create一个UIDocument，双击点开进入UIBuilder，直接通过UIBuilder可视化界面编辑UI界面。UI元素的标签和样式全都自动生成到uxml文件之中，新手友好，但是不直观。
 2. 方法二：创建一个uxml文件(相当于xml)和uss文件(相当于css文件)，直接编写标签和样式代码。新手不友好，各种样式类选择器优先级复杂难记，相对直观，容易管理。
@@ -384,7 +384,7 @@ string arguments = $"-f hevc -i pipe:0 -f rawvideo -pix_fmt rgb24 -s {videoWidth
 2. FFmpeg 解码后输出原始 RGB 数据
 3. 把 RGB 数据写入 Texture2D 显示
 
-![](./rm软件组客户端开发快速引导/16.png)
+![](./rm软件组客户端开发快速引导/16.jpg)
 
 ## Unity ai with yolov5
 
@@ -398,7 +398,7 @@ string arguments = $"-f hevc -i pipe:0 -f rawvideo -pix_fmt rgb24 -s {videoWidth
 
 实测效果：检测到 5 个目标 | 推理: 2.8ms | 总计: 75.6ms
 
-![](./rm软件组客户端开发快速引导/17.png)
+![](./rm软件组客户端开发快速引导/17.jpg)
 
 unity ai绕过了nvidia cuda深度学习框架，使用的是GPU计算图的方式加速AI推理和unity的shader类似。使得用户不需要安装CUDA深度学习环境，只需要安装过显卡驱动就行了。
 

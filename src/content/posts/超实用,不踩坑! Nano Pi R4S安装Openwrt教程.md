@@ -2,7 +2,7 @@
 title: 超实用,不踩坑! Nano Pi R4S安装Openwrt教程
 published: 2026-08-08
 description: ''
-image: './超实用,不踩坑! Nano Pi R4S安装Openwrt教程/2.png'
+image: './超实用,不踩坑! Nano Pi R4S安装Openwrt教程/2.jpg'
 tags: ['软路由', 'Openwrt', 'ImmortalWrt', 'NanoPi R4S']
 category: '软路由'
 draft: false
@@ -66,7 +66,7 @@ sudo gparted
 
 > 如果你出现502无法访问web界面的问题，但是能curl访问192.168.1.1，关闭梯子软件或者手动设置系统的梯子代理即可
 
-![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/2.png)
+![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/2.jpg)
 
 进来就可以看到熟系的界面了
 
@@ -126,7 +126,7 @@ echo 1 > "$PWM/pwm0/enable"
 
 在这里我仿照《绝区零》的风格编写了一套美化的css，在`全局设置`-`品牌信息文件夹路径`添加上文件夹路径，配置好后好看多了。
 
-![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/5.png)
+![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/5.jpg)
 
 开源链接：[https://github.com/riyuexingchennnn/filebrowser-zzz-style](https://github.com/riyuexingchennnn/filebrowser-zzz-style)
 

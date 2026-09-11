@@ -2,7 +2,7 @@
 title: 树莓派+Openwrt连接校园网，打破校园网设备限制
 published: 2024-04-17
 description: ''
-image: './树莓派-Openwrt连接校园网，打破校园网设备限制/5.png'
+image: './树莓派-Openwrt连接校园网，打破校园网设备限制/5.jpg'
 tags: ['软路由', 'Openwrt', '校园网', '树莓派']
 category: '软路由'
 draft: false
@@ -52,7 +52,7 @@ https://openwrt.cc/releases/targets/bcm27xx/bcm2711/
 
 等待树莓派开好机后，在浏览器中输入192.168.1.1，输入默认密码`password`
 
-![](./树莓派-Openwrt连接校园网，打破校园网设备限制/2.png)
+![](./树莓派-Openwrt连接校园网，打破校园网设备限制/2.jpg)
 
 点击`网络`--`无线`，然后点机你树莓派4B的无线网卡的`扫描`，找到校园网连接，后面的参数全是默认的，保存提交即可。
 
@@ -72,7 +72,7 @@ https://openwrt.cc/releases/targets/bcm27xx/bcm2711/
 
 这里放个插曲(**因为下面你可能会遇到**)，如果你发现，校园网认证网址(比如这个https://portal.csu.edu.cn/)打开后，网页很快的就反应了`无法连接`，而校园网wifi是连接上的，多半是DNS解析出了错(原因暂时不知，推测是校园网发现了你是路由器)。把网址改成10.1.1.1我们直接替它DNS解析好。
 
-![](./树莓派-Openwrt连接校园网，打破校园网设备限制/5.png)
+![](./树莓派-Openwrt连接校园网，打破校园网设备限制/5.jpg)
 
 >现在让我们来分析一下这个URL，别的学校应该也差不多
 
