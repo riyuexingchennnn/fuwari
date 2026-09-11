@@ -2,6 +2,7 @@
 
 import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
+import { Icon } from "astro-icon/components";
 
 const currentYear = new Date().getFullYear();
 ---
@@ -17,6 +18,7 @@ const currentYear = new Date().getFullYear();
         Powered by
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a><br>
-        本网站已<a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/riyuexingchennnn/fuwari">开源</a>
+        本网站已 <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/riyuexingchennnn/fuwari">开源</a><br>
+        <a class="transition link text-[var(--primary)] font-medium inline-flex items-center align-middle" target="_blank" rel="noopener noreferrer" href="https://beian.miit.gov.cn/"><Icon name="material-symbols:policy" class="text-[1.05em] mr-1"></Icon>津ICP备2026012839号-1</a>
     </div>
 </div>
