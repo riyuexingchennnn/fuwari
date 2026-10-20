@@ -64,7 +64,9 @@ sudo gparted
 
 #### windows系统上使用diskgenius磁盘管理工具扩容
 
+![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/12.png)
 
+![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/13.png)
 
 ### 开机打开web管理界面
 
@@ -78,7 +80,7 @@ sudo gparted
 
 ### 设置风扇开启自转脚本
 
-在系统-启动项-本地启动脚本中添加一下内容，保存即可
+在系统-启动项-本地启动脚本的exit 0上方添加一下内容，保存即可
 
 ```bash
 # NanoPi R4S fan fixed speed (90%)
@@ -99,7 +101,7 @@ echo 1 > "$PWM/pwm0/enable"
 
 1. 进入系统管理-软件包，点击更新列表，等待更新完成
 2. 在软件包搜索栏中输入你想安装的软件包名称，点击安装即可，这里我推荐几个安装
-   - `luci-app-argon-config`: 主题设置
+   - `luci-app-openclash`: 科学上网
    - `luci-app-openlist`: 开源的网盘openlist
    - `luci-app-filebrowser-go`: 文件管理器
    - `luci-app-docker`: docker
