@@ -41,14 +41,16 @@ lang: ''
 
 1. 打开[NanoPi R4S 构建 immortalwrt 镜像网站](https://firmware-selector.immortalwrt.org/?version=24.10.6&target=rockchip%2Farmv8&id=friendlyarm_nanopi-r4s)，选择 R4S，版本选择 24.10.6
     > 24.10.6这个版本是最后一个能支持opkg安装软件包的版本，后续的版本就迁移使用apk安装包，不再支持opkg安装软件包了，为了良好的兼容性，建议还是使用有opkg安装包的版本(24.10.6也支持使用apk安装)。
-2. 在**预安装软件包**后面添加一个主题`luci-theme-argon`，点击**请求构建**
-3. 下载镜像，选择 **SYSUPGRADE (EXT4)** 格式的，方便后续/overlay的扩容
-   > 如果选择 SYSUPGRADE (SQUASHFS)，默认的/overlay分区只有300MB，安装大量软件包后会经常不够用。
+2. 在**预安装软件包**后面添加一个主题`luci-theme-argon`和`luci-app-argon-config`，点击**请求构建**
+   > /overlay分区只有300MB，因此推荐先预安装这两个软件包，后续扩容后再安装其他软件包
+3. 下载镜像，选择 **SYSUPGRADE (EXT4)** 格式的，方便后续/overlay的扩容。
 4. 使用rpi-imager或者win32diskimager将镜像写入TF卡，写入完成后将TF卡继续插在电脑上，准备进行overlay分区扩容。
 
 ### overlay分区扩容
 
-这里使用gparted工具进行分区扩容，gparted是一个开源的分区管理工具，支持Linux、Windows和MacOS系统。
+#### ubuntu系统上使用gparted工具扩容
+
+使用gparted工具进行分区扩容，gparted是一个开源的分区管理工具，支持Linux、Windows和MacOS系统。
 
 ```bash
 sudo gparted
@@ -59,6 +61,10 @@ sudo gparted
 ![](./超实用,不踩坑!%20Nano%20Pi%20R4S安装Openwrt教程/4.png)
 
 调整了根目录的空间后，剩余的分给了/overlay分区，就足足差不多有32GB的空间了
+
+#### windows系统上使用diskgenius磁盘管理工具扩容
+
+
 
 ### 开机打开web管理界面
 
