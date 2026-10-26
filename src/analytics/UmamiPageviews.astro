@@ -27,13 +27,22 @@ const className = Astro.props.class;
 )}
 
 <script>
+interface UmamiMetric {
+    x?: string;
+    label?: string;
+    path?: string;
+    y?: number;
+    views?: number;
+    count?: number;
+}
+
 (function () {
     const API_BASE = "https://gateway-us.umami.is/api";
     const SHARE_ID = "dvktHwCGPSft7SGP";
     const CACHE_KEY = "cmcblog:umami-path-metrics";
     const CACHE_TTL = 5 * 60 * 1000;
 
-    function formatPageviews(value) {
+    function formatPageviews(value: unknown) {
         const number = Number(value);
 
         if (!Number.isFinite(number)) {
@@ -47,7 +56,7 @@ const className = Astro.props.class;
         return new Intl.NumberFormat("en-US").format(number);
     }
 
-    function normalizePath(path) {
+    function normalizePath(path: string) {
         try {
             path = new URL(path, window.location.origin).pathname;
         } catch {
@@ -63,7 +72,7 @@ const className = Astro.props.class;
         return path || "/";
     }
 
-    function getPathCandidates(path) {
+    function getPathCandidates(path: string) {
         const normalized = normalizePath(path);
         const withoutTrailingSlash = normalized.length > 1 ? normalized.replace(/\/$/, "") : normalized;
         const withTrailingSlash = withoutTrailingSlash === "/" ? "/" : `${withoutTrailingSlash}/`;
@@ -71,7 +80,7 @@ const className = Astro.props.class;
         return new Set([normalized, withoutTrailingSlash, withTrailingSlash]);
     }
 
-    function findPageviews(metrics, path) {
+    function findPageviews(metrics: UmamiMetric[], path: string) {
         const candidates = getPathCandidates(path);
         const match = metrics.find((item) => {
             const itemCandidates = getPathCandidates(item.x || item.label || item.path || "");
@@ -88,7 +97,7 @@ const className = Astro.props.class;
         return Number(match?.y ?? match?.views ?? match?.count ?? 0);
     }
 
-    function renderPageviews(metrics) {
+    function renderPageviews(metrics: UmamiMetric[]) {
         document.querySelectorAll("[data-umami-post-views]").forEach((root) => {
             const path = root.getAttribute("data-umami-path") || window.location.pathname;
             const value = root.querySelector("[data-umami-post-views-value]");
@@ -113,7 +122,7 @@ const className = Astro.props.class;
         return null;
     }
 
-    function writeCache(metrics) {
+    function writeCache(metrics: UmamiMetric[]) {
         try {
             localStorage.setItem(CACHE_KEY, JSON.stringify({ metrics, updatedAt: Date.now() }));
         } catch {
@@ -121,7 +130,7 @@ const className = Astro.props.class;
         }
     }
 
-    async function fetchMetrics() {
+    async function fetchMetrics(): Promise<UmamiMetric[]> {
         const shareResponse = await fetch(`${API_BASE}/share/${SHARE_ID}`, { cache: "no-store" });
 
         if (!shareResponse.ok) {
@@ -169,7 +178,9 @@ const className = Astro.props.class;
         }
     }
 
-    const pageviewsWindow = window;
+    const pageviewsWindow = window as Window & {
+        __cmcblogUmamiPageviews?: { load: () => Promise<void> };
+    };
 
     if (!pageviewsWindow.__cmcblogUmamiPageviews) {
         pageviewsWindow.__cmcblogUmamiPageviews = { load: loadPageviews };
