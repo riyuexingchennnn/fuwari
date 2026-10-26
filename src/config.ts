@@ -67,10 +67,10 @@ export const siteConfig: SiteConfig = {
       external: true,
     },
     {
-      name: '个人AI订阅服务代理中转站',
+      name: '个人API中转站',
       url: 'https://ck4xvfsqxt67.vip3.xiaomiqiu123.top/management.html',
       image: 'https://cdn.jsdelivr.net/gh/router-for-me/Cli-Proxy-API-Management-Center@main/logo.jpg',
-      description: '基于 CLIProxyAPI 搭建的个人API中转站平台',
+      description: '基于 CLIProxyAPI 搭建的个人订阅服务代理中转站平台',
       external: true,
     }
   ],
