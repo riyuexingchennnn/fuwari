@@ -33,30 +33,9 @@ export const siteConfig: SiteConfig = {
   apps: [
     {
       name: '个人网盘',
-      url: 'https://jumc7et35z6o.vip3.xiaomiqiu123.top/',
-      image: 'https://cdn.jsdelivr.net/gh/filebrowser/filebrowser@master/frontend/public/img/logo.svg',
-      description: '基于 FileBrowser 搭建的个人本地网盘',
-      external: true,
-    },
-    {
-      name: '个人密码库',
-      url: 'https://3mc6gx9ewgtu.vip3.xiaomiqiu123.top/',
-      image: 'https://cdn.jsdelivr.net/gh/dani-garcia/vaultwarden@main/resources/vaultwarden-icon.svg',
-      description: '基于 Vaultwarden 搭建的个人密码管理库',
-      external: true,
-    },
-    {
-      name: '个人网盘',
       url: 'https://59vp3kckptwv.vip3.xiaomiqiu123.top/',
       image: 'https://cdn.jsdelivr.net/gh/OpenListTeam/OpenList-Resource@main/logo/logo.svg',
       description: '基于 Openlist 搭建的个人本地网盘',
-      external: true,
-    },
-    {
-      name: '个人AI助手',
-      url: 'https://rcsvnfd47bsc.ngrok.xiaomiqiu123.top/#/chat',
-      image: 'https://cdn.jsdelivr.net/gh/AstrBotDevs/AstrBot@master/dashboard/src/assets/images/icon-no-shadow.svg',
-      description: '基于 Astrbot 搭建的个人AI助手，对接 Napcat 机器人',
       external: true,
     },
     {
@@ -80,6 +59,20 @@ export const siteConfig: SiteConfig = {
       description: '基于 Immich 搭建的个人云图库',
       external: true,
     },
+    {
+      name: '个人AI助手',
+      url: 'https://jumc7et35z6o.vip3.xiaomiqiu123.top/',
+      image: 'https://cdn.jsdelivr.net/gh/AstrBotDevs/AstrBot@master/dashboard/src/assets/images/icon-no-shadow.svg',
+      description: '基于 Astrbot 搭建的个人AI助手，对接 Napcat 机器人',
+      external: true,
+    },
+    {
+      name: '个人AI订阅服务代理中转站',
+      url: 'https://ck4xvfsqxt67.vip3.xiaomiqiu123.top/management.html',
+      image: 'https://cdn.jsdelivr.net/gh/router-for-me/Cli-Proxy-API-Management-Center@main/logo.jpg',
+      description: '基于 CLIProxyAPI 搭建的个人API中转站平台',
+      external: true,
+    }
   ],
 }
 
