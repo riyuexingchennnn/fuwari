@@ -60,6 +60,13 @@ export const siteConfig: SiteConfig = {
       external: true,
     },
     {
+      name: '个人书签应用',
+      url: 'https://3mc6gx9ewgtu.vip3.xiaomiqiu123.top/',
+      image: 'https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/karakeep.svg',
+      description: '基于 Karekeep 搭建的个人书签笔记应用',
+      external: true,
+    },
+    {
       name: '个人AI助手',
       url: 'https://jumc7et35z6o.vip3.xiaomiqiu123.top/',
       image: 'https://cdn.jsdelivr.net/gh/AstrBotDevs/AstrBot@master/dashboard/src/assets/images/icon-no-shadow.svg',
