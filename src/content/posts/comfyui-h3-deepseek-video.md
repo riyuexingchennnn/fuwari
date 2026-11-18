@@ -9,7 +9,7 @@ draft: false
 lang: 'zh-CN'
 ---
 
-这次用 RTX 5070 Ti 在 ComfyUI 里做一段舞蹈换角：把参考视频里的角色换成 DeepSeek 鲸鱼娘，同时尽量保住手势、视线、表情和口型。结果是：**原速 Turbo 8 步更适合作为预览基线；SeedVR2 能让轮廓更清楚，但增加采样步数、慢放后复速、超分都没能可靠修正动作。** 下文的动图均为静音 WebP，统一用 12 fps、300×400 展示，便于加载和并排观察；帧号与时间以下文 24 fps 的原始输出为准，不以网页动图判断口型同步。
+这次用 RTX 5070 Ti 在 ComfyUI 里做一段舞蹈换角：把参考视频里的角色换成 DeepSeek 鲸鱼娘，同时尽量保住手势、视线、表情和口型。结果是：**原速 Turbo 8 步更适合作为预览基线；SeedVR2 能让轮廓更清楚，但增加采样步数、慢放后复速、超分都没能可靠修正动作。** 下文每组对比都是一张三栏静音 WebP。三路从第 0 帧起按原片 24 fps 逐帧拼合，统一截到最短样本的 90 帧（3.75 秒），三栏同步播放、同步循环。口型与声音是否同步仍需看有声原片。
 
 ## 一、换角工作流：三视图管身份，视频管动作
 
@@ -32,9 +32,7 @@ lang: 'zh-CN'
 | Turbo v1.1，8 步 | 4 分 44 秒 | 第 19–21 帧误闭眼；约 2 秒处口型不匹配 |
 | 原生 H3，20 步 | 10 分 53 秒 | 第 0 帧手已下移，原片双臂仍交叠；第 19–21 帧眼睑压低，约 2 秒口型仍不匹配 |
 
-| 参考 | 原速 Turbo 8 步 | 原速原生 20 步 |
-| --- | --- | --- |
-| ![参考](/posts/comfyui-h3-deepseek-video/reference.webp) | ![Turbo 8 步](/posts/comfyui-h3-deepseek-video/turbo-8steps.webp) | ![原生 20 步](/posts/comfyui-h3-deepseek-video/native-20steps.webp) |
+![参考、原速 Turbo 8 步、原速原生 20 步同步对照](/posts/comfyui-h3-deepseek-video/steps-synced.webp)
 
 ![参考、Turbo 和原生 H3 同帧对照](/posts/comfyui-h3-deepseek-video/steps-comparison.webp)
 
@@ -50,9 +48,7 @@ lang: 'zh-CN'
 | 2× 慢放生成 | 原片前 96 帧重复为 192 帧、8 秒；正好符合 `5+17×11`，不补尾 | 每两帧取一帧，恢复 96 帧、4 秒；未过动作验收，未超分 |
 | 3× 慢放生成 | 原片前 90 帧重复为 270 帧、11.25 秒；再复制末帧 7 次，得到对齐的 277 帧 | 丢弃补尾，只取前 270 帧每组三帧的中间帧，恢复 90 帧、3.75 秒 |
 
-| 原速 Turbo | 2× 慢放后复速 | 3× 慢放后复速 |
-| --- | --- | --- |
-| ![原速生成](/posts/comfyui-h3-deepseek-video/turbo-8steps.webp) | ![两倍慢放复速](/posts/comfyui-h3-deepseek-video/slow-2x-restored.webp) | ![三倍慢放复速](/posts/comfyui-h3-deepseek-video/slow-3x-restored.webp) |
+![原速 Turbo、两倍慢放后复速、三倍慢放后复速同步对照](/posts/comfyui-h3-deepseek-video/speed-synced.webp)
 
 ![0.83 秒和 2 秒的手势对照](/posts/comfyui-h3-deepseek-video/speed-mismatch.webp)
 
@@ -66,9 +62,7 @@ lang: 'zh-CN'
 
 对照取**同一条原速 Turbo 成片**：读取视频帧，用 SeedVR2 v2.5.24（3B FP8、分块 VAE）从 672×896 超分到 1344×1792，再缩回参考分辨率 720×960。不插帧，三份样本均为 90 帧、24 fps、3.75 秒。超分实测 5 分 37 秒、显存峰值 7.40 GiB；缩回只做空间重采样，没有另加降噪。
 
-| Turbo 原始 | SeedVR2 2× | 2× 后缩回 720×960 |
-| --- | --- | --- |
-| ![Turbo 原始](/posts/comfyui-h3-deepseek-video/turbo-8steps.webp) | ![SeedVR2 两倍超分](/posts/comfyui-h3-deepseek-video/seedvr2-2x.webp) | ![超分后缩回参考分辨率](/posts/comfyui-h3-deepseek-video/seedvr2-resized.webp) |
+![Turbo 原始、SeedVR2 两倍超分、超分后缩回 720×960 同步对照](/posts/comfyui-h3-deepseek-video/seedvr2-synced.webp)
 
 ![超分前、超分后与缩回参考尺寸的同帧对照](/posts/comfyui-h3-deepseek-video/seedvr2-resize-comparison.webp)
 
